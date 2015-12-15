@@ -64,6 +64,9 @@
 					operator: '!=',
 					value: null
 		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '__At',
+					value: 'current'
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
 					property: 'State',
 					operator: '=',
 					value: 'Closed'
@@ -81,7 +84,7 @@
 					this._onLoad(store, records);
 				},
 				scope: this
-			},
+			}
 		});
 
 		var filter2 = Ext.create('Rally.data.lookback.QueryFilter', {
@@ -101,6 +104,9 @@
 					operator: '!=',
 					value: null
 		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '__At',
+					value: 'current'
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
 					property: 'State',
 					operator: '=',
 					value: 'Fixed'
@@ -118,7 +124,7 @@
 					this._onLoad(store, records);
 				},
 				scope: this
-			},
+			}
 		});
 
 		var filter3 = Ext.create('Rally.data.lookback.QueryFilter', {
@@ -138,6 +144,9 @@
 					operator: '!=',
 					value: null
 		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '__At',
+					value: 'current'
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
 					property: 'State',
 					operator: '=',
 					value: 'Ready for Test'
@@ -155,7 +164,7 @@
 					this._onLoad(store, records);
 				},
 				scope: this
-			},
+			}
 		});
 	},
 	
@@ -191,7 +200,7 @@
 					this._onLoad2(store);
 				},
 				scope: this
-			},
+			}
 		});
 
 		function formatDate(date) {
@@ -239,22 +248,22 @@
 						{
 							text: 'Project',
 							dataIndex: 'Project',
-							flex: 3,
+							flex: 3
 						},
 						{
 							text: 'Change Date',
 							dataIndex: 'From',
-							flex: 2,
+							flex: 2
 						},
 						{
 							text: 'State',
 							dataIndex: 'State',
-							flex: 2,
+							flex: 2
 						},
 						{
 							text: 'Previous State',
 							dataIndex: 'Previous',
-							flex: 2,
+							flex: 2
 						}
 				],
 				store: store

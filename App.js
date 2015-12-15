@@ -55,6 +55,9 @@ Ext.define('CustomApp', {
 					operator: '!=',
 					value: null
 		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '__At',
+					value: 'current'
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
 					property: 'State',
 					operator: '=',
 					value: 'Closed'
@@ -72,7 +75,7 @@ Ext.define('CustomApp', {
 					this._onLoad(store, records);
 				},
 				scope: this
-			},
+			}
 		});
 
 		var filter2 = Ext.create('Rally.data.lookback.QueryFilter', {
@@ -92,6 +95,9 @@ Ext.define('CustomApp', {
 					operator: '!=',
 					value: null
 		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '__At',
+					value: 'current'
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
 					property: 'State',
 					operator: '=',
 					value: 'Fixed'
@@ -109,7 +115,7 @@ Ext.define('CustomApp', {
 					this._onLoad(store, records);
 				},
 				scope: this
-			},
+			}
 		});
 
 		var filter3 = Ext.create('Rally.data.lookback.QueryFilter', {
@@ -129,6 +135,9 @@ Ext.define('CustomApp', {
 					operator: '!=',
 					value: null
 		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '__At',
+					value: 'current'
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
 					property: 'State',
 					operator: '=',
 					value: 'Ready for Test'
@@ -146,7 +155,7 @@ Ext.define('CustomApp', {
 					this._onLoad(store, records);
 				},
 				scope: this
-			},
+			}
 		});
 	},
 	
@@ -182,7 +191,7 @@ Ext.define('CustomApp', {
 					this._onLoad2(store);
 				},
 				scope: this
-			},
+			}
 		});
 
 		function formatDate(date) {
@@ -230,22 +239,22 @@ Ext.define('CustomApp', {
 						{
 							text: 'Project',
 							dataIndex: 'Project',
-							flex: 3,
+							flex: 3
 						},
 						{
 							text: 'Change Date',
 							dataIndex: 'From',
-							flex: 2,
+							flex: 2
 						},
 						{
 							text: 'State',
 							dataIndex: 'State',
-							flex: 2,
+							flex: 2
 						},
 						{
 							text: 'Previous State',
 							dataIndex: 'Previous',
-							flex: 2,
+							flex: 2
 						}
 				],
 				store: store
