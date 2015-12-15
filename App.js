@@ -3,8 +3,42 @@ Ext.define('CustomApp', {
     componentCls: 'app',
 	title: 'Dashboard Directory',
 	launch: function() {
+	
+		var panel = new Ext.Panel({
+			width: '100%',
+			height: 600,
+			autoScroll: true,
+			xtype: 'container',
+			id: 'container',
+			layout: 'vbox',
+			items: [{
+				itemId: 'store1panel',
+				flex: 1,
+				width: '100%',
+				title: 'Closed Defects',
+				xtype: 'panel',
+				autoScroll: true
+			},{
+				itemId: 'store2panel',
+				flex: 1,
+				width: '100%',
+				title: 'Fixed Defects',
+				xtype: 'panel',
+				autoScroll: true
+			},{
+				itemId: 'store3panel',
+				flex: 1,
+				width: '100%',
+				title: 'Ready for Test Defects',
+				xtype: 'panel',
+				autoScroll: true
+			}],
+			frame: true,
+			align: 'stretch'
+		});
+		this.add(panel);
 
-		var filters = Ext.create('Rally.data.lookback.QueryFilter', {
+		var filter1 = Ext.create('Rally.data.lookback.QueryFilter', {
 			property: '_TypeHierarchy',
 			operator: '=',
 			value: 'Defect'
@@ -22,27 +56,16 @@ Ext.define('CustomApp', {
 					value: null
 		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
 					property: 'State',
-					operator: '!=',
-					value: 'Submitted'
-		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
-					property: 'State',
-					operator: '!=',
-					value: 'Reopen'
-		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
-					property: 'State',
-					operator: '!=',
-					value: 'Open'
+					operator: '=',
+					value: 'Closed'
 		}));
-	
-		var snapshotStore = Ext.create('Rally.data.lookback.SnapshotStore', {
+		var snapshotStore1 = Ext.create('Rally.data.lookback.SnapshotStore', {
+			id: 'store1',
 			pageSize: 200,
 			limit: 10000,
-			// fetch: ['Name','State','_PreviousValues.State','FormattedID','c_TriageVerdict','_UnformattedID','_ValidFrom','Project'],
 			fetch: ['Name','Parent','_PreviousValues.State','FormattedID','_UnformattedID','_ValidFrom','Project','State','_ItemHierarchy'],
-			// fetch: ['Name','_PreviousValues.LeafStoryPlanEstimateTotal','FormattedID','_UnformattedID','_ValidFrom','Project','State','LeafStoryPlanEstimateTotal'],
-			filters: filters,
+			filters: filter1,
 			hydrate: ['_PreviousValues.State','State','Project'],
-			// hydrate: ['Project','Parent'],
 			autoLoad: true,
 			listeners: {
 				load: function(store, records) {
@@ -51,18 +74,90 @@ Ext.define('CustomApp', {
 				scope: this
 			},
 		});
-		
+
+		var filter2 = Ext.create('Rally.data.lookback.QueryFilter', {
+			property: '_TypeHierarchy',
+			operator: '=',
+			value: 'Defect'
+        }).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '_ValidFrom',
+					operator: '$gte',
+					value: '2015-12-02'
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: 'c_TriageVerdict',
+					operator: '!=',
+					value: null
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '_PreviousValues.State',
+					operator: '!=',
+					value: null
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: 'State',
+					operator: '=',
+					value: 'Fixed'
+		}));
+		var snapshotStore2 = Ext.create('Rally.data.lookback.SnapshotStore', {
+			id: 'store2',
+			pageSize: 200,
+			limit: 10000,
+			fetch: ['Name','Parent','_PreviousValues.State','FormattedID','_UnformattedID','_ValidFrom','Project','State','_ItemHierarchy'],
+			filters: filter2,
+			hydrate: ['_PreviousValues.State','State','Project'],
+			autoLoad: true,
+			listeners: {
+				load: function(store, records) {
+					this._onLoad(store, records);
+				},
+				scope: this
+			},
+		});
+
+		var filter3 = Ext.create('Rally.data.lookback.QueryFilter', {
+			property: '_TypeHierarchy',
+			operator: '=',
+			value: 'Defect'
+        }).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '_ValidFrom',
+					operator: '$gte',
+					value: '2015-12-02'
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: 'c_TriageVerdict',
+					operator: '!=',
+					value: null
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: '_PreviousValues.State',
+					operator: '!=',
+					value: null
+		})).and(Ext.create('Rally.data.lookback.QueryFilter', {
+					property: 'State',
+					operator: '=',
+					value: 'Ready for Test'
+		}));
+		var snapshotStore3 = Ext.create('Rally.data.lookback.SnapshotStore', {
+			id: 'store3',
+			pageSize: 200,
+			limit: 10000,
+			fetch: ['Name','Parent','_PreviousValues.State','FormattedID','_UnformattedID','_ValidFrom','Project','State','_ItemHierarchy'],
+			filters: filter3,
+			hydrate: ['_PreviousValues.State','State','Project'],
+			autoLoad: true,
+			listeners: {
+				load: function(store, records) {
+					this._onLoad(store, records);
+				},
+				scope: this
+			},
+		});
 	},
 	
 	_onLoad: function(store, records){
 		
 		var defects = [];
 		var id;
+		var storeID = store.storeId;
 		
 		Ext.Array.each(records, function(record) {
 			id = 'DE' + record.get('_UnformattedID');
-			// id = 'US' + record.get('_UnformattedID');
-			// id = 'F' + record.get('_UnformattedID');
 			
             defects.push({
                 Name: record.get('Name'),
@@ -72,26 +167,13 @@ Ext.define('CustomApp', {
 				From: formatDate(record.get('_ValidFrom')),
 				Project: record.get('Project').Name
             });
-            // defects.push({
-                // Name: record.get('Name'),
-                // FormattedID: id,
-				// State: record.get('ScheduleState'),
-				//LeafPoints: record.get('LeafStoryPlanEstimateTotal'),
-				// Previous: record.get('_PreviousValues.Project'),
-				//From: record.get('_ValidFrom'),
-				// From: formatDate(record.get('_ValidFrom')),
-				// Project: record.get('Project').Name
-            // });
 		});
-
+		
 		var myStore = Ext.create('Rally.data.custom.Store', {
 			data: defects,
-			// sortInfo:{
-				// field: 'From',
-				// direction:'DESC'// or 'DESC' (case sensitive for local sorting)
-			// },
-			groupField: 'From',
-			groupDir: 'DESC',
+			id: storeID,
+			// groupField: 'From',
+			// groupDir: 'DESC',
 			autoLoad: true,
 			pageSize: 200,
 			limit: Infinity,
@@ -115,6 +197,8 @@ Ext.define('CustomApp', {
 	},
 	
 	_onLoad2: function(store){
+		
+		var storeID = store.storeId;
 
 		function formatDate(date) {
 			if(!date) { return ''; }
@@ -126,58 +210,49 @@ Ext.define('CustomApp', {
 			return(thisDate);
 		}
 
-		if(this.down('#DefectGrid')){
-			this.down('#DefectGrid').destroy();
-		}
-		
-		this.add({
-			xtype: 'rallygrid',
-			width: '99%',
-			id: 'DefectGrid',
-			// features: [
-				// {
-				// ftype: 'groupingsummary',
-				// groupHeaderTpl: '{name} ({rows.length})',
-				// startCollapsed: true
-				// }
-			// ],
-			columnCfgs: [
-					{
-						text: 'ID',
-						dataIndex: 'FormattedID',
-						flex: 1
-					},
-					{
-						text: 'Name',
-						dataIndex: 'Name',
-						flex: 10
-					},
-					{
-						text: 'Project',
-						dataIndex: 'Project',
-						flex: 3,
-					},
-					{
-						text: 'Change Date',
-						dataIndex: 'From',
-						flex: 2,
-						// renderer: function(value) {
-							// return formatDate(value);
-						// }
-					},
-					{
-						text: 'State',
-						dataIndex: 'State',
-						flex: 2,
-					},
-					{
-						text: 'Previous State',
-						dataIndex: 'Previous',
-						flex: 2,
-					}
-			],
-			store: store
+
+        var treeview = Ext.create('Ext.Container', {
+            items: [{
+				xtype: 'rallygrid',
+				width: '99%',
+				// id: 'DefectGrid',
+				columnCfgs: [
+						{
+							text: 'ID',
+							dataIndex: 'FormattedID',
+							flex: 1
+						},
+						{
+							text: 'Name',
+							dataIndex: 'Name',
+							flex: 10
+						},
+						{
+							text: 'Project',
+							dataIndex: 'Project',
+							flex: 3,
+						},
+						{
+							text: 'Change Date',
+							dataIndex: 'From',
+							flex: 2,
+						},
+						{
+							text: 'State',
+							dataIndex: 'State',
+							flex: 2,
+						},
+						{
+							text: 'Previous State',
+							dataIndex: 'Previous',
+							flex: 2,
+						}
+				],
+				store: store
+			}]
 		});
+		console.log('Loading to: ',storeID,'panel');
+		this.down('#'+storeID+'panel').add(treeview);
 
 	}
 	
